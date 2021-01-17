@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Etat de l'art - Groupe G8C</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="node_modules/chart.js/dist/Chart.js"></script>
+</head>
+<body>
+	<h1>Factorisation de nombre entier en facteur premier</h1>
+	<h2>1- Données</h2>
+	<tr>
+		<td> u<sub>0</sub> = </td>
+		<td><input type="text" id="u0" name="u0" value="0"></td>
+	</tr><br />
+	<tr>
+		<td>u<sub>1</sub> = </td>
+		<td><input type="text" id="u1" name="u1" value="0"></td>
+	</tr><br />
+	<tr>
+                <td>u<sub>2</sub> = </td>
+                <td><input type="text" id="u2" name="u2" value="0"></td>
+        </tr><br />
+	<tr>
+                <td>u<sub>3</sub> = </td>
+                <td><input type="text" id="u3" name="u3" value="0"></td>
+        </tr><br />
+	<tr>
+		<button style="width:350px;" type="button" onclick="division();">Calculer</button>
+	</tr>
+
+	<h2>2- Resultat de la factorisation en nombre premier</h2>
+	<div>u0 : <span id='h0'></span></div>
+	<div>u1 : <span id='h1'></span></div>
+	<div>u2 : <span id='h2'></span></div>
+        <div>u3 : <span id='h3'></span></div>
+
+	<h2>3- Graphique</h2>
+	<canvas id="graph1"></canvas>
+</body>
+</html>
+
+<script>
+	var ctx = document.getElementById('graph1').getContext('2d')
+        var data = {
+                labels: ['u0', 'u1', 'u2', 'u3'],
+                datasets: [{
+                        backgroundColor: '#41A498',
+                        label: 'Division successive',
+                        data: [1, 0, 0, 0]
+                },{
+                        backgroundColor: '#4B834E',
+                        label: 'Rho',
+                        data: [0, 0, 0, 0]
+                },{
+                        backgroundColor: '#B4C757',
+                        label: 'Fermat',
+                        data: [0, 0, 0, 0]
+                }]
+        }
+
+        var options = {
+                scales: {
+                        yAxes: [{
+                                type: 'logarithmic'
+                        }]
+                }
+        }
+        var config = {
+                type: 'bar',
+                data: data,
+                options: options
+        }
+        var graph1 = new Chart(ctx, config)
+
+	function racineC(nb) {
+		var racine = 1;
+		
+		while (racine * racine <= nb) {
+			racine++;
+		}
+		return (racine);
+	}
+
+	function division1(uS, hS) {
+		var u = document.getElementById(uS).value;
+		var h = document.getElementById(hS);
+		var n = 2;
+		var r;
+
+                h.textContent = '';
+                if (u < 0) {
+                        h.textContent = '0';
+                } else if (u <= 1) {
+                        h.textContent = '1';
+                }
+                while (u > 1) {
+			r = racineC(u);
+                        while (n <= r) {
+                                if (u % n == 0) {
+                                        u = u / n;
+                                        h.textContent += (n + ' * ');
+                                        break;
+                                }
+                                n++;
+                        }
+			if (n > r) {
+				h.textContent += (u + ' * ');
+				break;
+			}
+                }
+		if (document.getElementById(uS).value > 1)
+                	h.textContent = h.textContent.substring(0, h.textContent.length - 2);
+	}
+
+	function division() {
+		division1('u0', 'h0');
+		division1('u1', 'h1');
+		division1('u2', 'h2');
+		division1('u3', 'h3');
+
+		differentsAlgo(document.getElementById('u0').value, document.getElementById('u1').value, document.getElementById('u2').value, document.getElementById('u3').value);
+		//console.time('Loop time');
+                //division_s(231212124124);
+                //var c = console.timeEnd('Loop time');
+                //console.log(c);
+
+		//var start = window.performance.now();
+		//division_s(231212124124);
+		//var end = window.performance.now();
+		//var time = end - start;
+		//console.log(time);
+
+		/* var startTime = new Date().getTime();
+		var n = 2024;
+		if (n < 100000000) {
+			for (var i = 0 ; i < 1000 ; i++) {
+				division_s(n);
+			}
+		}
+		console.log(new Date().getTime() - startTime); */
+
+		//var begin =Date.now();
+		//division_s(231212124124);
+		//var end2 = Date.now();
+		//console.log(end2 - begin);
+	}
+
+	function differentsAlgo(n0, n1, n2, n3) {
+		var startTime;
+		var temps;
+		var tab0 = [];
+		var tab1 = [];
+		var tab2 = [];
+
+		//
+		startTime = new Date().getTime();
+		division_s(n0);
+		tab0[0] = new Date().getTime() - startTime;
+		console.log(new Date().getTime() - startTime);
+
+		startTime = new Date().getTime();
+                division_s(n0);
+                tab1[0] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+		startTime = new Date().getTime();
+                division_s(n0);
+                tab2[0] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+		//
+		startTime = new Date().getTime();
+                division_s(n1);
+                tab0[1] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+                startTime = new Date().getTime();
+                division_s(n1);
+                tab1[1] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+                startTime = new Date().getTime();
+                division_s(n1);
+                tab2[1] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+		//
+		startTime = new Date().getTime();
+                division_s(n2);
+                tab0[2] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+                startTime = new Date().getTime();
+                division_s(n2);
+                tab1[2] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+                startTime = new Date().getTime();
+                division_s(n2);
+                tab2[2] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+		//
+                startTime = new Date().getTime();
+                division_s(n3);
+                tab0[3] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+                startTime = new Date().getTime();
+                division_s(n3);
+                tab1[3] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+                startTime = new Date().getTime();
+                division_s(n3);
+                tab2[3] = new Date().getTime() - startTime;
+                console.log(new Date().getTime() - startTime);
+
+		data = {
+                	labels: ['u0', 'u1', 'u2', 'u3'],
+                	datasets: [{
+                        	backgroundColor: '#41A498',
+                        	label: 'Division successive',
+                        	data: [tab0[0], tab0[1], tab0[2], tab0[3]]
+                	},{
+                        	backgroundColor: '#4B834E',
+                        	label: 'Rho',
+                        	data: [tab1[0], tab1[1], tab1[2], tab1[3]]
+                	},{
+                        	backgroundColor: '#B4C757',
+                        	label: 'Fermat',
+                        	data: [tab2[0], tab2[1], tab2[2], tab2[3]]
+                	}]
+        	}
+
+        	config = {
+               		type: 'bar',
+                	data: data,
+                	options: options
+        	}
+        	graph1 = new Chart(ctx, config)
+	}
+
+	function division_s(u) {
+		var n = 2;
+		var r;
+
+		if (u <= 1)
+			return (1);
+		while (u > 1) {
+			r = racineC(u);
+			while (n <= r) {
+				if (u % n == 0) {
+                                        u = u / n;
+                                        break;
+                                }
+				n++;
+			}
+			if (n > r)
+                                break;
+		}
+		return (1);
+	}
+</script>
